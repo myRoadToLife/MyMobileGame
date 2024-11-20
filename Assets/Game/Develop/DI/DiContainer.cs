@@ -22,7 +22,7 @@ namespace Game.Develop.DI
                 throw new InvalidOperationException($"The type {typeof(T)} is already registered.");
 
             Registration registration = new Registration(container => factory(this));
-            _container.Add(typeof(T), registration);
+            _container[typeof(T)] = registration;
         }
 
         public T Resolve <T>()
