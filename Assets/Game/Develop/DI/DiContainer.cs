@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Game.Develop.DI
 {
-    public class DiContainer : MonoBehaviour
+    public class DiContainer
     {
         private readonly Dictionary<Type, Registration> _container = new Dictionary<Type, Registration>();
         private readonly DiContainer _parent;
