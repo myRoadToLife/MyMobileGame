@@ -1,6 +1,7 @@
 using Game.Develop.CommonServices.AssetsManagement;
 using Game.Develop.CommonServices.CoroutinePerformer;
 using Game.Develop.CommonServices.LoadingScreen;
+using Game.Develop.CommonServices.SceneManagement;
 using Game.Develop.DI;
 using UnityEngine;
 
@@ -21,12 +22,14 @@ namespace Game.Develop.EntryPoint
 
             RegisterResourcesAssetLoader(projectContainer);
             RegisterCoroutinePerformer(projectContainer);
+
+            RegisterLoadingCurtain(projectContainer);
             RegisterSceneLoader(projectContainer);
+            RegisterSceneSwitcher(projectContainer);
 
             //все регистрации прошли
             projectContainer.Resolve<ICoroutinePerformer>().StartPerformer(_gameBootstrap.Run(projectContainer));
         }
-
 
         private void SetupAppSettings()
         {
@@ -34,6 +37,14 @@ namespace Game.Develop.EntryPoint
             Application.targetFrameRate = 60;
         }
 
+        private void RegisterSceneSwitcher(DiContainer container)
+        {
+            container.RegisterAsSingle(c => new SceneSwitcher(
+                c.Resolve<ICoroutinePerformer>(), 
+                c.Resolve<ILoadingCurtain>(), 
+                c.Resolve<ISceneLoader>(), 
+                c));
+        }
 
         private void RegisterResourcesAssetLoader(DiContainer diContainer)
             => diContainer.RegisterAsSingle(c => new ResourcesAssetLoader());
@@ -51,7 +62,7 @@ namespace Game.Develop.EntryPoint
             });
         }
 
-        private void RegisterSceneLoader(DiContainer diContainer)
+        private void RegisterLoadingCurtain(DiContainer diContainer)
         {
             diContainer.RegisterAsSingle<ILoadingCurtain>(c =>
             {
@@ -63,5 +74,8 @@ namespace Game.Develop.EntryPoint
                 return Instantiate(standardLoadingCurtainPrefab);
             });
         }
+
+        private void RegisterSceneLoader(DiContainer projectContainer)
+            => projectContainer.RegisterAsSingle<ISceneLoader>(c => new DefaultSceneLoader());
     }
 }

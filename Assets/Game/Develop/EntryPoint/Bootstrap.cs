@@ -1,5 +1,6 @@
 using System.Collections;
 using Game.Develop.CommonServices.LoadingScreen;
+using Game.Develop.CommonServices.SceneManagement;
 using Game.Develop.DI;
 using UnityEngine;
 
@@ -12,6 +13,7 @@ namespace Game.Develop.EntryPoint
         public IEnumerator Run(DiContainer container)
         {
             ILoadingCurtain loadingCurtain = container.Resolve<ILoadingCurtain>();
+            SceneSwitcher sceneSwitcher = container.Resolve<SceneSwitcher>();
             loadingCurtain.Show();
 
             Debug.Log("Начинается инициализация");
@@ -21,9 +23,10 @@ namespace Game.Develop.EntryPoint
             yield return new WaitForSeconds(1.5f);
 
             Debug.Log("Заканчивается инициализация");
-            
+
             loadingCurtain.Hide();
             //Переход на следующую сцену с помощью сервиса смены сцен
+            sceneSwitcher.ProcessSwitchSceneFor(new OutputBootstrapArgs(new MainMenuInputArgs()));
         }
     }
 }
