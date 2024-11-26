@@ -1,4 +1,5 @@
 using System.Collections;
+using Game.Develop.CommonServices.DataManagement.DataProviders;
 using Game.Develop.CommonServices.LoadingScreen;
 using Game.Develop.CommonServices.SceneManagement;
 using Game.Develop.DI;
@@ -19,6 +20,8 @@ namespace Game.Develop.EntryPoint
             Debug.Log("Начинается инициализация");
 
             //Инициализация всех сервисов. Подгрузка данных и конфигов(реклама и аналитика)
+            
+            container.Resolve<PlayerDataProvider>().Load();
 
             yield return new WaitForSeconds(1.5f);
 

@@ -14,6 +14,7 @@ namespace Game.Develop.Gameplay.Infrastructure
             _container = container;
 
             ProcessRegistration();
+            
             Debug.Log($"Подгружаем ресурсы для уровня {gameplayInputArgs.LevelNumber}");
             Debug.Log($"Создаем персонажа");
             Debug.Log($"Сцена готова, можно начинать играть");
@@ -24,6 +25,8 @@ namespace Game.Develop.Gameplay.Infrastructure
         private void ProcessRegistration()
         {
             //делаем регистрации для сцены геймплея
+            
+            _container.Initialize();
         }
         
         private void Update()

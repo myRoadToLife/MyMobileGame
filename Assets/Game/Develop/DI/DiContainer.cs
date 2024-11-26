@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Game.Develop.DI
 {
-    public class DiContainer
+    public class DiContainer : IDisposable
     {
         private readonly Dictionary<Type, Registration> _container = new Dictionary<Type, Registration>();
         private readonly DiContainer _parent;
@@ -15,13 +15,15 @@ namespace Game.Develop.DI
 
         public DiContainer(DiContainer parent) => _parent = parent;
 
-        public void RegisterAsSingle <T>(Func<DiContainer, T> factory)
+        public Registration RegisterAsSingle <T>(Func<DiContainer, T> factory)
         {
             if (_container.ContainsKey(typeof(T)))
                 throw new InvalidOperationException($"The type {typeof(T)} is already registered.");
 
             Registration registration = new Registration(container => factory(this));
             _container[typeof(T)] = registration;
+
+            return registration;
         }
 
         public T Resolve <T>()
@@ -47,6 +49,27 @@ namespace Game.Develop.DI
             throw new InvalidOperationException($"The type {typeof(T)} is not registered.");
         }
 
+        public void Initialize()
+        {
+            foreach (Registration registration in _container.Values)
+            {
+                if (registration.Instance == null && registration.IsNonLazy)
+                    registration.Instance = registration.Factory(this);
+
+                if (registration.Instance is IInitializable initializable)
+                    initializable.Initialize();
+            }
+        }
+
+        public void Dispose()
+        {
+            foreach (Registration registration in _container.Values)
+            {
+                if (registration.Instance is IDisposable disposable)
+                    disposable.Dispose();
+            }
+        }
+
         private T CreateFrom <T>(Registration registration)
         {
             if (registration.Instance == null && registration.Factory != null)
@@ -60,9 +83,13 @@ namespace Game.Develop.DI
             public Func<DiContainer, object> Factory { get; set; } //Спосмоб создания
             public object Instance { get; set; } //Объект, который создаем
 
+            public bool IsNonLazy { get; private set; }
+
             public Registration(object instance) => Instance = instance;
 
             public Registration(Func<DiContainer, object> factory) => Factory = factory;
+
+            public void NonLazy() => IsNonLazy = true;
         }
     }
 }

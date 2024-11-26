@@ -52,7 +52,7 @@ namespace Game.Develop.CommonServices.SceneManagement
             switch (outputBootstrapArgs.NextSceneInputArgs)
             {
                 case MainMenuInputArgs mainMenuInputArgs:
-                    yield return ProcessSwitchFromMainMenuScene(mainMenuInputArgs);
+                    yield return ProcessSwitchToMainMenuScene(mainMenuInputArgs);
                     break;
                 default:
                     throw new ArgumentException(ErrorSceneTransitionMessage);
@@ -64,7 +64,7 @@ namespace Game.Develop.CommonServices.SceneManagement
             switch (outputMainMenuArgs.NextSceneInputArgs)
             {
                 case GameplayInputArgs gameplayInputArgs:
-                    yield return ProcessSwitchFromGameplayScene(gameplayInputArgs);
+                    yield return ProcessSwitchToGameplayScene(gameplayInputArgs);
                     break;
                 default:
                     throw new ArgumentException(ErrorSceneTransitionMessage);
@@ -76,16 +76,18 @@ namespace Game.Develop.CommonServices.SceneManagement
             switch (outputGameplayArgs.NextSceneInputArgs)
             {
                 case MainMenuInputArgs mainMenuInputArgs:
-                    yield return ProcessSwitchFromMainMenuScene(mainMenuInputArgs);
+                    yield return ProcessSwitchToMainMenuScene(mainMenuInputArgs);
                     break;
                 default:
                     throw new ArgumentException(ErrorSceneTransitionMessage);
             }
         }
 
-        private IEnumerator ProcessSwitchFromMainMenuScene(MainMenuInputArgs mainMenuInputArgs)
+        private IEnumerator ProcessSwitchToMainMenuScene(MainMenuInputArgs mainMenuInputArgs)
         {
             _loadingCurtain.Show();
+
+            _currentContainer?.Dispose();
 
             yield return _sceneLoader.LoadAsync(SceneId.Empty);
             yield return _sceneLoader.LoadAsync(SceneId.MainMenu);
@@ -102,9 +104,11 @@ namespace Game.Develop.CommonServices.SceneManagement
             _loadingCurtain.Hide();
         }
 
-        private IEnumerator ProcessSwitchFromGameplayScene(GameplayInputArgs gameplayInputArgs)
+        private IEnumerator ProcessSwitchToGameplayScene(GameplayInputArgs gameplayInputArgs)
         {
             _loadingCurtain.Show();
+
+            _currentContainer?.Dispose();
 
             yield return _sceneLoader.LoadAsync(SceneId.Empty);
             yield return _sceneLoader.LoadAsync(SceneId.Gameplay);
@@ -115,7 +119,7 @@ namespace Game.Develop.CommonServices.SceneManagement
                 throw new NullReferenceException(nameof(MainMenuInputArgs));
 
             _currentContainer = new DiContainer(_projectContainer);
-            
+
             yield return gameplayBootstrap.Run(_currentContainer, gameplayInputArgs);
 
             _loadingCurtain.Hide();

@@ -1,9 +1,13 @@
 using Game.Develop.CommonServices.AssetsManagement;
 using Game.Develop.CommonServices.CoroutinePerformer;
+using Game.Develop.CommonServices.DataManagement;
+using Game.Develop.CommonServices.DataManagement.DataProviders;
 using Game.Develop.CommonServices.LoadingScreen;
 using Game.Develop.CommonServices.SceneManagement;
+using Game.Develop.CommonServices.Wallet;
 using Game.Develop.DI;
 using UnityEngine;
+using UnityEngine.Rendering.LookDev;
 
 namespace Game.Develop.EntryPoint
 {
@@ -27,6 +31,13 @@ namespace Game.Develop.EntryPoint
             RegisterSceneLoader(projectContainer);
             RegisterSceneSwitcher(projectContainer);
 
+            RegisterSaveLoadService(projectContainer);
+            RegisterPlayerDataProvider(projectContainer);
+
+            RegisterWalletService(projectContainer);
+            
+            projectContainer.Initialize();
+
             //все регистрации прошли
             projectContainer.Resolve<ICoroutinePerformer>().StartPerformer(_gameBootstrap.Run(projectContainer));
         }
@@ -37,12 +48,22 @@ namespace Game.Develop.EntryPoint
             Application.targetFrameRate = 60;
         }
 
+        private void RegisterWalletService(DiContainer container)
+            => container.RegisterAsSingle(c => new WalletService(c.Resolve<PlayerDataProvider>())).NonLazy();
+
+
+        private void RegisterPlayerDataProvider(DiContainer container)
+            => container.RegisterAsSingle(c => new PlayerDataProvider(c.Resolve<ISaveLoadService>()));
+
+        private void RegisterSaveLoadService(DiContainer container)
+            => container.RegisterAsSingle<ISaveLoadService>(c => new SaveLoadService(new JsonSerializer(), new LocalDataRepository()));
+
         private void RegisterSceneSwitcher(DiContainer container)
         {
             container.RegisterAsSingle(c => new SceneSwitcher(
-                c.Resolve<ICoroutinePerformer>(), 
-                c.Resolve<ILoadingCurtain>(), 
-                c.Resolve<ISceneLoader>(), 
+                c.Resolve<ICoroutinePerformer>(),
+                c.Resolve<ILoadingCurtain>(),
+                c.Resolve<ISceneLoader>(),
                 c));
         }
 
