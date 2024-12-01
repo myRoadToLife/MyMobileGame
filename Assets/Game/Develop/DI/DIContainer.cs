@@ -3,19 +3,19 @@ using System.Collections.Generic;
 
 namespace Game.Develop.DI
 {
-    public class DiContainer : IDisposable
+    public class DIContainer : IDisposable
     {
         private readonly Dictionary<Type, Registration> _container = new Dictionary<Type, Registration>();
-        private readonly DiContainer _parent;
+        private readonly DIContainer _parent;
         private readonly List<Type> _requests = new List<Type>();
 
-        public DiContainer() : this(null)
+        public DIContainer() : this(null)
         {
         }
 
-        public DiContainer(DiContainer parent) => _parent = parent;
+        public DIContainer(DIContainer parent) => _parent = parent;
 
-        public Registration RegisterAsSingle <T>(Func<DiContainer, T> factory)
+        public Registration RegisterAsSingle <T>(Func<DIContainer, T> factory)
         {
             if (IsAlreadyRegistered<T>())
                 throw new InvalidOperationException($"The type {typeof(T)} is already registered.");
@@ -91,14 +91,14 @@ namespace Game.Develop.DI
 
         public class Registration
         {
-            public Func<DiContainer, object> Factory { get; set; } //Спосмоб создания
+            public Func<DIContainer, object> Factory { get; set; } //Спосмоб создания
             public object Instance { get; set; } //Объект, который создаем
 
             public bool IsNonLazy { get; private set; }
 
             public Registration(object instance) => Instance = instance;
 
-            public Registration(Func<DiContainer, object> factory) => Factory = factory;
+            public Registration(Func<DIContainer, object> factory) => Factory = factory;
 
             public void NonLazy() => IsNonLazy = true;
         }

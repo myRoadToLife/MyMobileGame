@@ -1,4 +1,5 @@
 using Game.Develop.CommonServices.AssetsManagement;
+using Game.Develop.CommonUI.Wallet;
 using Game.Develop.Configs.Common.Wallet;
 
 namespace Game.Develop.CommonServices.ConfigsManagment
@@ -11,15 +12,20 @@ namespace Game.Develop.CommonServices.ConfigsManagment
         {
             _resourcesAssetLoader = resourcesAssetLoader;
         }
-        
-        public StartWalletConfig StartWalletConfig  { get; set; }
+
+        public StartWalletConfig StartWalletConfig { get; private set; }
+        public CurrencyIconsConfig CurrencyIconsConfig { get; private set; }
 
         public void LoadAll()
         {
             LoadStartConfig();
+            LoadCurrencyIconsConfig();
         }
-        
+
         private void LoadStartConfig()
-        => StartWalletConfig = _resourcesAssetLoader.LoadResource<StartWalletConfig>("Configs/Common/Wallet/StartWalletConfig");
+            => StartWalletConfig = _resourcesAssetLoader.LoadResource<StartWalletConfig>("Configs/Common/Wallet/StartWalletConfig");
+
+        private void LoadCurrencyIconsConfig()
+            => CurrencyIconsConfig = _resourcesAssetLoader.LoadResource<CurrencyIconsConfig>("Configs/Common/Wallet/CurrencyIconsConfig");
     }
 }

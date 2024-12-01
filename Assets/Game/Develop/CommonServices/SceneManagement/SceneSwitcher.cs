@@ -14,14 +14,14 @@ namespace Game.Develop.CommonServices.SceneManagement
     {
         private const string ErrorSceneTransitionMessage = "Данный переход невозможен";
 
-        private readonly DiContainer _projectContainer;
+        private readonly DIContainer _projectContainer;
         private readonly ICoroutinePerformer _coroutinePerformer;
         private readonly ILoadingCurtain _loadingCurtain;
         private readonly ISceneLoader _sceneLoader;
 
-        private DiContainer _currentContainer;
+        private DIContainer _currentContainer;
 
-        public SceneSwitcher(ICoroutinePerformer coroutinePerformer, ILoadingCurtain loadingCurtain, ISceneLoader sceneLoader, DiContainer projectContainer)
+        public SceneSwitcher(ICoroutinePerformer coroutinePerformer, ILoadingCurtain loadingCurtain, ISceneLoader sceneLoader, DIContainer projectContainer)
         {
             _coroutinePerformer = coroutinePerformer;
             _loadingCurtain = loadingCurtain;
@@ -97,7 +97,7 @@ namespace Game.Develop.CommonServices.SceneManagement
             if (mainMenuBootstrap == null)
                 throw new NullReferenceException(nameof(MainMenuInputArgs));
 
-            _currentContainer = new DiContainer(_projectContainer);
+            _currentContainer = new DIContainer(_projectContainer);
 
             yield return mainMenuBootstrap.Run(_currentContainer, mainMenuInputArgs);
 
@@ -118,7 +118,7 @@ namespace Game.Develop.CommonServices.SceneManagement
             if (gameplayBootstrap == null)
                 throw new NullReferenceException(nameof(MainMenuInputArgs));
 
-            _currentContainer = new DiContainer(_projectContainer);
+            _currentContainer = new DIContainer(_projectContainer);
 
             yield return gameplayBootstrap.Run(_currentContainer, gameplayInputArgs);
 

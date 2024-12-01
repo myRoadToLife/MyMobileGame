@@ -7,9 +7,9 @@ namespace Game.Develop.Gameplay.Infrastructure
 {
     public class GameplayBootstrap : MonoBehaviour
     {
-        private DiContainer _container;
+        private DIContainer _container;
 
-        public IEnumerator Run(DiContainer container,    GameplayInputArgs gameplayInputArgs)
+        public IEnumerator Run(DIContainer container,    GameplayInputArgs gameplayInputArgs)
         {
             _container = container;
 

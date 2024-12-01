@@ -12,7 +12,7 @@ namespace Game.Develop.EntryPoint
     //То, Bootstrap уже для инициализации начала работ
     public class Bootstrap : MonoBehaviour
     {
-        public IEnumerator Run(DiContainer container)
+        public IEnumerator Run(DIContainer container)
         {
             ILoadingCurtain loadingCurtain = container.Resolve<ILoadingCurtain>();
             SceneSwitcher sceneSwitcher = container.Resolve<SceneSwitcher>();

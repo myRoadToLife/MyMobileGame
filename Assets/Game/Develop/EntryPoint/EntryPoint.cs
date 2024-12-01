@@ -19,7 +19,7 @@ namespace Game.Develop.EntryPoint
         private void Awake()
         {
             SetupAppSettings();
-            DiContainer projectContainer = new DiContainer();
+            DIContainer projectContainer = new DIContainer();
 
             //Регистрация сервисов на целый проект
             //Аналог global context из популярных DI фреймворков
@@ -51,21 +51,21 @@ namespace Game.Develop.EntryPoint
             Application.targetFrameRate = 60;
         }
 
-        private void RegisterConfigsProviderService(DiContainer container)
+        private void RegisterConfigsProviderService(DIContainer container)
             => container.RegisterAsSingle(c => new ConfigsProviderService(c.Resolve<ResourcesAssetLoader>()));
 
-        private void RegisterWalletService(DiContainer container)
+        private void RegisterWalletService(DIContainer container)
             => container.RegisterAsSingle(c => new WalletService(c.Resolve<PlayerDataProvider>())).NonLazy();
 
 
-        private void RegisterPlayerDataProvider(DiContainer container)
+        private void RegisterPlayerDataProvider(DIContainer container)
             => container.RegisterAsSingle(c => new PlayerDataProvider(c.Resolve<ISaveLoadService>(),
                 c.Resolve<ConfigsProviderService>()));
 
-        private void RegisterSaveLoadService(DiContainer container)
+        private void RegisterSaveLoadService(DIContainer container)
             => container.RegisterAsSingle<ISaveLoadService>(c => new SaveLoadService(new JsonSerializer(), new LocalDataRepository()));
 
-        private void RegisterSceneSwitcher(DiContainer container)
+        private void RegisterSceneSwitcher(DIContainer container)
         {
             container.RegisterAsSingle(c => new SceneSwitcher(
                 c.Resolve<ICoroutinePerformer>(),
@@ -74,10 +74,10 @@ namespace Game.Develop.EntryPoint
                 c));
         }
 
-        private void RegisterResourcesAssetLoader(DiContainer diContainer)
+        private void RegisterResourcesAssetLoader(DIContainer diContainer)
             => diContainer.RegisterAsSingle(c => new ResourcesAssetLoader());
 
-        private void RegisterCoroutinePerformer(DiContainer diContainer)
+        private void RegisterCoroutinePerformer(DIContainer diContainer)
         {
             diContainer.RegisterAsSingle<ICoroutinePerformer>(c =>
             {
@@ -90,7 +90,7 @@ namespace Game.Develop.EntryPoint
             });
         }
 
-        private void RegisterLoadingCurtain(DiContainer diContainer)
+        private void RegisterLoadingCurtain(DIContainer diContainer)
         {
             diContainer.RegisterAsSingle<ILoadingCurtain>(c =>
             {
@@ -103,7 +103,7 @@ namespace Game.Develop.EntryPoint
             });
         }
 
-        private void RegisterSceneLoader(DiContainer projectContainer)
+        private void RegisterSceneLoader(DIContainer projectContainer)
             => projectContainer.RegisterAsSingle<ISceneLoader>(c => new DefaultSceneLoader());
     }
 }
