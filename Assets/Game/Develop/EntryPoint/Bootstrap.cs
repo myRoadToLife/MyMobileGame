@@ -1,4 +1,5 @@
 using System.Collections;
+using Game.Develop.CommonServices.ConfigsManagment;
 using Game.Develop.CommonServices.DataManagement.DataProviders;
 using Game.Develop.CommonServices.LoadingScreen;
 using Game.Develop.CommonServices.SceneManagement;
@@ -8,7 +9,7 @@ using UnityEngine;
 namespace Game.Develop.EntryPoint
 {
     //Если Entry Point это глобальные регистрации для старта проекта
-    //То Bootstrap уже для инициализации начала работ
+    //То, Bootstrap уже для инициализации начала работ
     public class Bootstrap : MonoBehaviour
     {
         public IEnumerator Run(DiContainer container)
@@ -20,6 +21,7 @@ namespace Game.Develop.EntryPoint
             Debug.Log("Начинается инициализация");
 
             //Инициализация всех сервисов. Подгрузка данных и конфигов(реклама и аналитика)
+            container.Resolve<ConfigsProviderService>().LoadAll();
             
             container.Resolve<PlayerDataProvider>().Load();
 

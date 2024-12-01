@@ -1,4 +1,5 @@
 using Game.Develop.CommonServices.AssetsManagement;
+using Game.Develop.CommonServices.ConfigsManagment;
 using Game.Develop.CommonServices.CoroutinePerformer;
 using Game.Develop.CommonServices.DataManagement;
 using Game.Develop.CommonServices.DataManagement.DataProviders;
@@ -35,7 +36,9 @@ namespace Game.Develop.EntryPoint
             RegisterPlayerDataProvider(projectContainer);
 
             RegisterWalletService(projectContainer);
-            
+
+            RegisterConfigsProviderService(projectContainer);
+
             projectContainer.Initialize();
 
             //все регистрации прошли
@@ -48,12 +51,16 @@ namespace Game.Develop.EntryPoint
             Application.targetFrameRate = 60;
         }
 
+        private void RegisterConfigsProviderService(DiContainer container)
+            => container.RegisterAsSingle(c => new ConfigsProviderService(c.Resolve<ResourcesAssetLoader>()));
+
         private void RegisterWalletService(DiContainer container)
             => container.RegisterAsSingle(c => new WalletService(c.Resolve<PlayerDataProvider>())).NonLazy();
 
 
         private void RegisterPlayerDataProvider(DiContainer container)
-            => container.RegisterAsSingle(c => new PlayerDataProvider(c.Resolve<ISaveLoadService>()));
+            => container.RegisterAsSingle(c => new PlayerDataProvider(c.Resolve<ISaveLoadService>(),
+                c.Resolve<ConfigsProviderService>()));
 
         private void RegisterSaveLoadService(DiContainer container)
             => container.RegisterAsSingle<ISaveLoadService>(c => new SaveLoadService(new JsonSerializer(), new LocalDataRepository()));

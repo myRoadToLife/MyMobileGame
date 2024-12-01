@@ -17,13 +17,24 @@ namespace Game.Develop.DI
 
         public Registration RegisterAsSingle <T>(Func<DiContainer, T> factory)
         {
-            if (_container.ContainsKey(typeof(T)))
+            if (IsAlreadyRegistered<T>())
                 throw new InvalidOperationException($"The type {typeof(T)} is already registered.");
 
             Registration registration = new Registration(container => factory(this));
             _container[typeof(T)] = registration;
 
             return registration;
+        }
+
+        public bool IsAlreadyRegistered <T>()
+        {
+            if (_container.ContainsKey(typeof(T)))
+                return true;
+
+            if (_parent != null)
+                return _parent.IsAlreadyRegistered<T>();
+
+            return false;
         }
 
         public T Resolve <T>()
